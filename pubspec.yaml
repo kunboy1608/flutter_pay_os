@@ -1,6 +1,6 @@
 name: flutter_pay_os
-description: "A new Flutter package project."
-version: 0.0.1
+description: "Pay OS Flutter package."
+version: 1.0.0
 homepage:
 
 environment:
@@ -8,8 +8,10 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
+  crypto: ^3.0.3
   flutter:
     sdk: flutter
+  http: ^1.2.1
 
 dev_dependencies:
   flutter_test:
