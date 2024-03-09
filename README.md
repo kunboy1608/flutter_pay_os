@@ -11,29 +11,41 @@ and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/developing-packages).
 -->
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+This is not an official library from PayOs. PayOs provides an automated payment solution powered by VietQR.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+The library provides functions, functions, and methods to integrate PayOs into Flutter applications for all 6 platforms: Android, iOs, Windows, Web, MacOs and Linux
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+You need to register for PayOs service to get 3 things apiKey, clientKey and checksumKey.
+[PayOs homepage](https://payos.vn/)
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+Add code below into file pubspec.yaml
+```
+flutter_pay_os:
+    git: 
+        url: https://github.com/kunboy1608/flutter_pay_os.git
+        ref: main # branch name
+```
+If you use this package for macOs, please add text below into macos/Runner/DebugProfile.entitlements and macos/Runner/Release.entitlements in your project.
+```
+<key>com.apple.security.network.client</key>
+<true/>
+```
 
-```dart
-const like = 'sample';
+All done. Good luck.
+
+## Example
+```
+git clone https://github.com/kunboy1608/flutter_pay_os.git
+cd flutter_pay_os/example
+flutter run
 ```
 
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+All contributions are welcome. You can create an issue, or pull request.
