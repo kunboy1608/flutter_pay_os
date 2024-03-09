@@ -1,0 +1,22 @@
+name: example
+description: "Pay OS Flutter package example"
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+  flutter_pay_os:
+    path: ../
+  fluttertoast: ^8.2.4
+  qr_flutter: ^4.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
