@@ -33,7 +33,7 @@ class PayOsService {
   /// endpoint at 'https://api-merchant.payos.vn/v2/payment-requests'.
   ///
   /// The [paymentData] should be properly initialized with necessary details,
-  /// including the [signature] (calculated using [PayOsUtils.createSignatureOfPaymentRequest])
+  /// including the signature (calculated using [PayOsUtils.createSignatureOfPaymentRequest])
   /// and other required headers ([x-client-id] and [x-api-key]).
   ///
   /// If the API call is successful (HTTP status code 200), the response data is
@@ -214,6 +214,77 @@ class PayOsService {
       }
     } finally {
       client.close();
+    }
+  }
+
+  /// This function is used to confirm a webhook with a given URL.
+  ///
+  /// @param [webhookUrl] The URL of the webhook to be confirmed. It should be a non-empty string.
+  ///
+  /// @return A Future that completes with the webhook URL if the confirmation is successful.
+  ///
+  /// @throws Exception If the webhook URL is null or empty, an exception is thrown with a message indicating invalid parameters.
+  /// If the server response status code is 404 or 401, an exception is thrown with a message indicating an internal server error or unauthorized access, respectively.
+  Future<String> confirmWebhook(String? webhookUrl) async {
+    if (webhookUrl != null && webhookUrl.isNotEmpty) {
+      String url = 'https://api-merchant.payos.vn/confirm-webhook';
+      final headers = {
+        'Accept': 'application/json',
+        'Content-type': 'application/json',
+        'Charset': 'UTF-8',
+        'x-client-id': clientId,
+        'x-api-key': apiKey,
+      };
+      final body = jsonEncode({"webhookUrl": webhookUrl});
+      final client = http.Client();
+      try {
+        final response = await client.post(
+          Uri.parse(url),
+          headers: headers,
+          body: body,
+        );
+        int statusCode = response.statusCode;
+        if (statusCode == 200) {
+          return webhookUrl;
+        } else if (statusCode == 404) {
+          throw Exception(PayOsConstants.errorMessage['INTERNAL_SERVER_ERROR']);
+        } else if (statusCode == 401) {
+          throw Exception(PayOsConstants.errorMessage['UNAUTHORIZED']);
+        } else {
+          throw Exception(PayOsConstants.errorMessage['INTERNAL_SERVER_ERROR']);
+        }
+      } finally {
+        client.close();
+      }
+    } else {
+      throw Exception(PayOsConstants.errorMessage['INVALID_PARAMETER']);
+    }
+  }
+
+  /// This function is used to verify the data and signature from a webhook.
+  ///
+  /// @param [webhookBody] The body of the webhook. It should be a map containing 'data' and 'signature'.
+  ///
+  /// @return A Future that completes with the data if the verification is successful.
+  ///
+  /// @throws Exception If the data is null, an exception is thrown with a message indicating no data.
+  /// If the signature is empty, an exception is thrown with a message indicating no signature.
+  /// If the signature does not match the calculated signature, an exception is thrown with a message indicating data integrity issues.
+  Future<Map<String, dynamic>> verifyPaymentWebhookData(
+      Map<String, dynamic> webhookBody) async {
+    Map<String, dynamic> data = webhookBody['data'];
+    String signature = webhookBody['signature'];
+    if (data.isEmpty) {
+      throw Exception(PayOsConstants.errorMessage['NO_DATA']);
+    } else if (signature.isEmpty) {
+      throw Exception(PayOsConstants.errorMessage['NO_SIGNATURE']);
+    } else {
+      String signData = PayOsUtils.createSignatureFromObj(data, checksumKey);
+      if (signData != signature) {
+        throw Exception(PayOsConstants.errorMessage['DATA_NOT_INTEGRITY']);
+      } else {
+        return data;
+      }
     }
   }
 }
