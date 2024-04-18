@@ -77,4 +77,17 @@ class PayOsPaymentResponse {
       qrCode: map["qrCode"],
     );
   }
+  Map<String, dynamic> toMap() => {
+        "bin": bin,
+        "accountNumber": accountNumber,
+        "accountName": accountName,
+        "amount": amount,
+        "description": description,
+        "orderCode": orderCode,
+        "currency": currency,
+        "paymentLinkId": paymentLinkId,
+        "status": status?.value,
+        "checkoutUr": checkoutUrl,
+        "qrCode": qrCode,
+      };
 }
